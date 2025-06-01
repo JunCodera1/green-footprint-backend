@@ -1,0 +1,63 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int       @id @default(autoincrement())
+  email        String    @unique
+  password     String
+  firstName    String?
+  lastName     String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  // Relations
+  activities   Activity[]
+  goals        Goal[]
+
+  @@map("users")
+}
+
+model Activity {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  type        ActivityType
+  description String?
+  carbonValue Float    // CO2 equivalent in kg
+  date        DateTime @default(now())
+  createdAt   DateTime @default(now())
+
+  // Relations
+  user        User     @relation(fields: [userId], references: [id])
+
+  @@map("activities")
+}
+
+model Goal {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  targetValue Float    // Target CO2 reduction in kg
+  currentValue Float   @default(0)
+  deadline    DateTime
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  // Relations
+  user        User     @relation(fields: [userId], references: [id])
+
+  @@map("goals")
+}
+
+enum ActivityType {
+  TRANSPORTATION
+  ENERGY
+  FOOD
+  WASTE
+  WATER
+  OTHER
+}
