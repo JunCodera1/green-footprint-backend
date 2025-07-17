@@ -1,5 +1,5 @@
 import { validateRegister, validateLogin } from '../../../src/modules/auth/auth.validation';
-import { validationHelpers } from '../../utils/test-helpers';
+import { validationHelpers } from '../../../src/utils/test-helpers';
 
 describe('Auth Validation', () => {
   describe('registerSchema', () => {
@@ -26,7 +26,7 @@ describe('Auth Validation', () => {
     });
 
     it('should reject invalid email format', () => {
-      validationHelpers.invalidEmails.forEach(email => {
+      validationHelpers.invalidEmails.forEach((email: string) => {
         const invalidData = {
           email,
           password: 'SecurePass123'
@@ -39,7 +39,7 @@ describe('Auth Validation', () => {
     });
 
     it('should reject weak passwords', () => {
-      validationHelpers.invalidPasswords.forEach(password => {
+      validationHelpers.invalidPasswords.forEach((password: string) => {
         const invalidData = {
           email: 'test@example.com',
           password
@@ -51,7 +51,7 @@ describe('Auth Validation', () => {
     });
 
     it('should accept strong passwords', () => {
-      validationHelpers.validPasswords.forEach(password => {
+      validationHelpers.validPasswords.forEach((password: string) => {
         const validData = {
           email: 'test@example.com',
           password
@@ -110,7 +110,7 @@ describe('Auth Validation', () => {
     });
 
     it('should reject invalid email format', () => {
-      validationHelpers.invalidEmails.forEach(email => {
+      validationHelpers.invalidEmails.forEach((email: string) => {
         const invalidData = {
           email,
           password: 'SecurePass123'
@@ -145,7 +145,7 @@ describe('Auth Validation', () => {
     it('should accept any password format for login', () => {
       const weakPasswords = ['weak', '123', 'password'];
 
-      weakPasswords.forEach(password => {
+      weakPasswords.forEach((password: string) => {
         const validData = {
           email: 'test@example.com',
           password
