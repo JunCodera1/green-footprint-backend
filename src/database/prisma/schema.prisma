@@ -1,0 +1,147 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User of the system
+model User {
+  id          Int          @id @default(autoincrement())
+  email       String       @unique
+  password    String
+  firstName   String?
+  lastName    String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  // Relations
+  posts       Post[]
+  profile     Profile?
+  activities  Activity[]
+  goals       Goal[]
+
+  @@map("users")
+}
+
+// Blog or forum post authored by a user
+model Post {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  title     String   @db.VarChar(255)
+  content   String?
+  published Boolean  @default(false)
+
+  // Relations
+  author   User @relation(fields: [authorId], references: [id])
+  authorId Int
+}
+
+// User profile with additional info
+model Profile {
+  id     Int     @id @default(autoincrement())
+  bio    String?
+  user   User    @relation(fields: [userId], references: [id])
+  userId Int     @unique
+}
+
+// Activity performed by a user, with carbon value and verification
+model Activity {
+  id          Int          @id @default(autoincrement())
+  userId      Int
+  type        ActivityType
+  customType  String?
+  description String?
+  carbonValue Float
+  date        DateTime     @default(now())
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  location    String?      @db.VarChar(255)
+  source      String?
+  tags        String[]
+  verificationStatus ActivityVerificationStatus?
+  mediaUrl    String?
+  notes       String?
+  isPublic    Boolean?     @default(true)
+  deletedAt   DateTime?
+
+  // Relations
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("activities")
+  @@index([userId, date])
+}
+
+// Goal set by a user, with progress tracking
+model Goal {
+  id             Int           @id @default(autoincrement())
+  userId         Int
+  title          String        @db.VarChar(255)
+  targetValue    Float
+  currentValue   Float         @default(0)
+  deadline       DateTime
+  isActive       Boolean       @default(true)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  description    String?
+  category       GoalCategory?
+  notes          String?
+  recurring      RecurringType?
+  completionDate DateTime?
+  deletedAt      DateTime?
+
+  // Relations
+  user           User          @relation(fields: [userId], references: [id])
+  progressHistory GoalProgress[]
+
+  @@map("goals")
+}
+
+// Progress update for a goal
+model GoalProgress {
+  id        Int      @id @default(autoincrement())
+  goalId    Int
+  value     Float
+  date      DateTime @default(now())
+
+  // Relations
+  goal      Goal     @relation(fields: [goalId], references: [id])
+}
+
+// Types of activities a user can log
+enum ActivityType {
+  TRANSPORTATION
+  ENERGY
+  FOOD
+  WASTE
+  WATER
+  OTHER
+}
+
+// Categories for user goals
+enum GoalCategory {
+  TRANSPORT
+  ENERGY
+  FOOD
+  LIFESTYLE
+  OTHER
+}
+
+// Status for activity verification
+enum ActivityVerificationStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
+// Recurring types for goals
+enum RecurringType {
+  NONE
+  WEEKLY
+  MONTHLY
+  YEARLY
+}
+

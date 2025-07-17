@@ -1,8 +1,7 @@
 import dotenv from "dotenv";
-
 dotenv.config();
 
-module.exports = {
+export const config = {
   app: {
     port: process.env.DEV_APP_PORT || 3000,
     appName: process.env.APP_NAME || "greenFootprint",
@@ -17,20 +16,20 @@ module.exports = {
     dialect: "postgres",
     logging: true,
   },
-  winiston: {
+  winston: {
     logpath: "/greenLogs/logs/",
   },
   auth: {
-    jwt_secret: process.env.JWT_SECRET,
+    jwt_secret: process.env.JWT_SECRET || "defaultSecret",
     jwt_expiresin: process.env.JWT_EXPIRES_IN || "1d",
     saltRounds: process.env.SALT_ROUND || 10,
     refresh_token_secret:
       process.env.REFRESH_TOKEN_SECRET || "VmVyeVBvd2VyZnVsbFNlY3JldA==",
-    refresh_token_expiresin: process.env.REFRESH_TOKEN_EXPIRES_IN || "2d", // 2 days
+    refresh_token_expiresin: process.env.REFRESH_TOKEN_EXPIRES_IN || "2d",
   },
   sendgrid: {
-    api_key: process.env.SEND_GRID_API_KEY,
-    api_user: process.env.USERNAME,
+    api_key: process.env.SEND_GRID_API_KEY || "",
+    api_user: process.env.USERNAME || "",
     from_email: process.env.FROM_EMAIL || "minhtien0601200@gmail.com",
   },
 };
