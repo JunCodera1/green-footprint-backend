@@ -1,248 +1,332 @@
-# GREEN FOOTPRINT BACKEND
+# 🌱 Green Footprint Backend
 
-## 🌱 Overview
+> **A sustainable lifestyle tracking API** - Monitor, analyze, and reduce your environmental impact through comprehensive carbon footprint tracking and goal management.
 
-Green Footprint is a sustainability-focused application that helps users track their environmental impact through various activities like transportation, energy consumption, and daily habits. This backend provides robust APIs for user management, activity tracking, and carbon footprint calculations.
+## 📋 Table of Contents
+
+- [Overview](#overview)
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Architecture](#architecture)
+- [Getting Started](#getting-started)
+- [API Documentation](#api-documentation)
+- [Development](#development)
+- [Deployment](#deployment)
+- [Contributing](#contributing)
+
+## 🎯 Overview
+
+Green Footprint Backend is a comprehensive RESTful API designed to help users track their environmental impact and work towards sustainability goals. The system provides:
+
+- **Carbon Footprint Tracking**: Monitor CO2 emissions from daily activities
+- **Goal Management**: Set and track environmental improvement targets
+- **Activity Logging**: Record various types of environmental activities
+- **Analytics & Insights**: Visualize impact trends and get recommendations
+- **User Management**: Secure authentication and profile management
+
+## ✨ Features
+
+### Core Functionality
+- 🔐 **JWT Authentication** with refresh tokens
+- 👤 **User Management** with profiles and preferences
+- 📊 **Activity Tracking** across multiple categories
+- 🎯 **Goal Setting** with progress monitoring
+- 📈 **Analytics Dashboard** with carbon footprint calculations
+- 📝 **Blog/Forum Posts** for community engagement
+- 🔍 **Activity Verification** system
+- 📱 **Multi-language Support** (i18n)
+
+### Activity Categories
+- 🚗 **Transportation** (car, bike, public transport)
+- ⚡ **Energy** (electricity, heating, cooling)
+- 🍽️ **Food** (diet choices, food waste)
+- 🗑️ **Waste** (recycling, composting)
+- 💧 **Water** (usage, conservation)
 
 ## 🛠️ Tech Stack
 
-- **Runtime**: Node.js
-- **Language**: TypeScript
-- **Database**: PostgreSQL
-- **ORM**: Prisma
-- **Framework**: Express.js
-- **Authentication**: JWT
+| Category | Technology | Version |
+|----------|------------|---------|
+| **Runtime** | Node.js | 18+ |
+| **Language** | TypeScript | 5.8+ |
+| **Framework** | Express.js | 5.1+ |
+| **Database** | PostgreSQL | 15+ |
+| **ORM** | Prisma | 6.9+ |
+| **Authentication** | JWT + bcryptjs | - |
+| **Validation** | Joi | 17.13+ |
+| **Logging** | Winston | 3.17+ |
+| **Email** | SendGrid | - |
+| **Development** | ts-node-dev | 2.0+ |
 
-## 📋 Prerequisites
+## 🏗️ Architecture
 
-Before running this project, make sure you have the following installed:
-
-- Node.js (v16 or higher)
-- npm or yarn
-- PostgreSQL (v12 or higher)
-- Git
+```
+src/
+├── modules/           # Feature-based modules
+│   ├── auth/         # Authentication & authorization
+│   ├── users/        # User management
+│   ├── activities/   # Activity tracking
+│   ├── goals/        # Goal management
+│   ├── posts/        # Blog/forum posts
+│   └── profiles/     # User profiles
+├── shared/           # Shared utilities
+│   ├── middleware/   # Express middleware
+│   ├── utils/        # Utility functions
+│   ├── types/        # TypeScript types
+│   └── constants/    # Application constants
+├── config/           # Configuration files
+├── database/         # Database setup & migrations
+└── routes/           # Route definitions
+```
 
 ## 🚀 Getting Started
 
-### 1. Clone the Repository
+### Prerequisites
+
+- **Node.js** 18+ 
+- **PostgreSQL** 15+
+- **npm** or **yarn**
+- **Git**
+
+### Quick Start
+
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd green-footprint-backend
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Environment setup**
+   ```bash
+   cp .env.example .env
+   ```
+   
+   Configure your `.env` file:
+   ```env
+   # Database
+   DATABASE_URL="postgresql://user:password@localhost:5432/green_footprint"
+   
+   # JWT
+   JWT_SECRET="your-super-secret-jwt-key-min-32-chars"
+   JWT_EXPIRES_IN="7d"
+   
+   # Server
+   PORT=3000
+   NODE_ENV=development
+   
+   # Email (optional)
+   SEND_GRID_API_KEY="your-sendgrid-api-key"
+   FROM_EMAIL="your-email@domain.com"
+   ```
+
+4. **Database setup**
+   ```bash
+   # Generate Prisma client
+   npx prisma generate
+   
+   # Push schema to database
+   npx prisma db push
+   
+   # (Optional) Seed database
+   npx prisma db seed
+   ```
+
+5. **Start development server**
+   ```bash
+   npm run dev
+   ```
+
+   Server will be available at `http://localhost:3000`
+
+### Docker Setup
 
 ```bash
-git clone <repository-url>
-cd green-footprint-backend
+# Using Docker Compose
+docker-compose up -d
+
+# Or build manually
+docker build -t green-footprint-backend .
+docker run -p 3000:3000 green-footprint-backend
 ```
 
-### 2. Install Dependencies
+## 📚 API Documentation
 
-```bash
-npm install
-```
+### Authentication Endpoints
 
-### 3. Environment Configuration
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/api/auth/register` | Register new user |
+| `POST` | `/api/auth/login` | User login |
+| `GET` | `/api/auth/profile` | Get user profile |
+| `POST` | `/api/auth/refresh` | Refresh JWT token |
 
-Create a `.env` file in the root directory:
+### User Management
 
-```env
-# Database Configuration
-DATABASE_URL="postgresql://USER:PASSWORD@localhost:5432/green_footprint_db?schema=public"
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/api/users/profile` | Get user profile |
+| `PUT` | `/api/users/profile` | Update user profile |
+| `DELETE` | `/api/users/account` | Delete user account |
 
-# JWT Configuration
-JWT_SECRET="your-super-secret-jwt-key"
+### Activity Tracking
 
-# Server Configuration
-PORT=3000
-NODE_ENV=development
-```
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/api/activities` | Get user activities |
+| `POST` | `/api/activities` | Create new activity |
+| `PUT` | `/api/activities/:id` | Update activity |
+| `DELETE` | `/api/activities/:id` | Delete activity |
+| `GET` | `/api/activities/:id` | Get specific activity |
 
-**Important**: Replace `USER`, `PASSWORD`, and `your-super-secret-jwt-key` with your actual values.
+### Goal Management
 
-### 4. Database Setup
-
-Set up your Prisma schema and database:
-
-```bash
-# Generate Prisma client
-npx prisma generate
-
-# Push schema to database
-npx prisma db push
-
-# (Optional) Seed the database
-npx prisma db seed
-```
-
-### 5. Build and Run
-
-#### Development Mode
-
-```bash
-npm run dev
-```
-
-#### Production Mode
-
-```bash
-# Compile TypeScript
-npx tsc
-
-# Run the compiled JavaScript
-node dist/server.js
-```
-
-If successful, you'll see:
-
-```
-Express is listening at http://localhost:3000
-```
-
-## 📊 Database Schema
-
-### Example Models
-
-```prisma
-generator client {
-  provider = "prisma-client-js"
-}
-
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
-
-model User {
-  id           Int       @id @default(autoincrement())
-  email        String    @unique
-  password     String
-  firstName    String?
-  lastName     String?
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
-
-  // Relations
-  activities   Activity[]
-  goals        Goal[]
-
-  @@map("users")
-}
-
-model Activity {
-  id          Int      @id @default(autoincrement())
-  userId      Int
-  type        ActivityType
-  description String?
-  carbonValue Float    // CO2 equivalent in kg
-  date        DateTime @default(now())
-  createdAt   DateTime @default(now())
-
-  // Relations
-  user        User     @relation(fields: [userId], references: [id])
-
-  @@map("activities")
-}
-
-model Goal {
-  id          Int      @id @default(autoincrement())
-  userId      Int
-  targetValue Float    // Target CO2 reduction in kg
-  currentValue Float   @default(0)
-  deadline    DateTime
-  isActive    Boolean  @default(true)
-  createdAt   DateTime @default(now())
-
-  // Relations
-  user        User     @relation(fields: [userId], references: [id])
-
-  @@map("goals")
-}
-
-enum ActivityType {
-  TRANSPORTATION
-  ENERGY
-  FOOD
-  WASTE
-  WATER
-  OTHER
-}
-```
-
-## 🔌 API Endpoints
-
-### Authentication
-
-- `POST /api/auth/register` - User registration
-- `POST /api/auth/login` - User login
-- `GET /api/auth/profile` - Get user profile (protected)
-
-### Activities
-
-- `GET /api/activities` - Get user activities (protected)
-- `POST /api/activities` - Create new activity (protected)
-- `PUT /api/activities/:id` - Update activity (protected)
-- `DELETE /api/activities/:id` - Delete activity (protected)
-
-### Goals
-
-- `GET /api/goals` - Get user goals (protected)
-- `POST /api/goals` - Create new goal (protected)
-- `PUT /api/goals/:id` - Update goal (protected)
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/api/goals` | Get user goals |
+| `POST` | `/api/goals` | Create new goal |
+| `PUT` | `/api/goals/:id` | Update goal |
+| `DELETE` | `/api/goals/:id` | Delete goal |
+| `POST` | `/api/goals/:id/progress` | Add progress update |
 
 ### Analytics
 
-- `GET /api/analytics/carbon-footprint` - Get carbon footprint summary (protected)
-- `GET /api/analytics/trends` - Get environmental impact trends (protected)
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/api/analytics/carbon-footprint` | Get carbon footprint summary |
+| `GET` | `/api/analytics/trends` | Get environmental trends |
+| `GET` | `/api/analytics/goals-progress` | Get goals progress |
 
-## 🔧 Development Scripts
+## 🛠️ Development
 
-```json
-{
-  "scripts": {
-    "dev": "ts-node-dev src/server.ts",
-    "build": "tsc",
-    "start": "node dist/server.js",
-    "test": "jest",
-    "prisma:generate": "prisma generate",
-    "prisma:push": "prisma db push",
-    "prisma:studio": "prisma studio"
-  }
-}
+### Available Scripts
+
+```bash
+# Development
+npm run dev          # Start development server
+npm run build        # Build for production
+npm run start        # Start production server
+
+# Database
+npm run prisma:generate  # Generate Prisma client
+npm run prisma:push      # Push schema to database
+npm run prisma:studio    # Open Prisma Studio
+
+# Code Quality
+npm run lint         # Run ESLint
+npm run test         # Run tests
 ```
 
-## 🌍 Environmental Impact Features
+### Project Structure
 
-- **Carbon Footprint Tracking**: Monitor CO2 emissions from various activities
-- **Activity Categories**: Transportation, energy, food, waste, and water usage
-- **Goal Setting**: Set and track environmental improvement targets
-- **Progress Analytics**: Visualize environmental impact over time
-- **Sustainability Insights**: Get personalized recommendations
+```
+green-footprint-backend/
+├── src/
+│   ├── modules/          # Feature modules
+│   │   ├── auth/         # Authentication
+│   │   ├── users/        # User management
+│   │   ├── activities/   # Activity tracking
+│   │   ├── goals/        # Goal management
+│   │   ├── posts/        # Blog posts
+│   │   └── profiles/     # User profiles
+│   ├── shared/           # Shared utilities
+│   │   ├── middleware/   # Express middleware
+│   │   ├── utils/        # Utility functions
+│   │   ├── types/        # TypeScript types
+│   │   └── constants/    # App constants
+│   ├── config/           # Configuration
+│   ├── database/         # Database setup
+│   └── routes/           # Route definitions
+├── tests/                # Test files
+├── docs/                 # Documentation
+├── scripts/              # Utility scripts
+└── docker/               # Docker files
+```
 
-## 🔐 Security
+### Database Schema
 
-- JWT-based authentication
-- Password hashing with bcrypt
-- Input validation and sanitization
-- Rate limiting on API endpoints
-- CORS configuration for cross-origin requests
+The application uses PostgreSQL with the following main entities:
+
+- **Users**: User accounts and authentication
+- **Activities**: Environmental activities with carbon values
+- **Goals**: User-defined environmental targets
+- **Posts**: Blog/forum posts for community
+- **Profiles**: Extended user information
+
+## 🚀 Deployment
+
+### Production Build
+
+```bash
+# Build the application
+npm run build
+
+# Start production server
+npm start
+```
+
+### Environment Variables
+
+Required environment variables for production:
+
+```env
+NODE_ENV=production
+PORT=3000
+DATABASE_URL=postgresql://user:password@host:5432/database
+JWT_SECRET=your-super-secret-jwt-key-min-32-chars
+JWT_EXPIRES_IN=7d
+```
+
+### Docker Deployment
+
+```bash
+# Build and run with Docker Compose
+docker-compose -f docker-compose.prod.yml up -d
+
+# Or build manually
+docker build -t green-footprint-backend .
+docker run -p 3000:3000 --env-file .env green-footprint-backend
+```
 
 ## 🤝 Contributing
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+We welcome contributions! Please follow these steps:
 
-## 📝 License
+1. **Fork** the repository
+2. **Create** a feature branch (`git checkout -b feature/amazing-feature`)
+3. **Commit** your changes (`git commit -m 'Add amazing feature'`)
+4. **Push** to the branch (`git push origin feature/amazing-feature`)
+5. **Open** a Pull Request
+
+### Development Guidelines
+
+- Follow TypeScript best practices
+- Write tests for new features
+- Update documentation as needed
+- Follow the existing code style
+- Use conventional commit messages
+
+## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 👥 Contributors
+## 👥 Team
 
-- **JunCodera1**: [GitHub Profile](https://github.com/JunCodera1)
-- **Minhwritecode**: [GitHub Profile](https://github.com/Minhwritecode)
+- **JunCodera1** - [GitHub](https://github.com/JunCodera1)
+- **Minhwritecode** - [GitHub](https://github.com/Minhwritecode)
 
 ## 📞 Support
 
-If you have any questions or need help, please open an issue on GitHub or contact the maintainers.
+- **Issues**: [GitHub Issues](https://github.com/your-repo/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/your-repo/discussions)
+- **Email**: support@greenfootprint.com
 
 ---
 
 **Made with 🌱 for a sustainable future**
+
+> *Every small action counts towards a greener tomorrow*
