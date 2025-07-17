@@ -1,5 +1,6 @@
-import { validateRegister, validateLogin } from '../../../src/modules/auth/auth.validation';
-import { validationHelpers } from '../../../src/utils/test-helpers';
+import { validateRegister, validateLogin } from '../../../modules/auth/auth.validation';
+import { validationHelpers } from '../../utils/test-helpers';
+
 
 describe('Auth Validation', () => {
   describe('registerSchema', () => {
