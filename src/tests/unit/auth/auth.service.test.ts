@@ -1,5 +1,5 @@
-import { AuthService } from '../../../src/modules/auth/auth.service';
-import { RegisterRequest, LoginRequest } from '../../../src/modules/auth/auth.types';
+import { AuthService } from '../../../modules/auth/auth.service';
+import { RegisterRequest, LoginRequest } from '../../../modules/auth/auth.types';
 import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
